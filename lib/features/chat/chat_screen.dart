@@ -102,55 +102,113 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
           ),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: provider.isRecording
-                        ? const Icon(Icons.mic_off)
-                        : const Icon(Icons.mic),
-                    onPressed: () async {
-                      try {
-                        if (!provider.isRecording) {
-                          await provider.startRecording();
-                        } else {
-                          await provider.stopRecordingAndTranscribe();
-                        }
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Recorder error: $e')),
-                        );
-                      }
-                    },
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: _ctrl,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (v) {
-                        provider.sendText(v);
-                        _ctrl.clear();
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Type your message here...',
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Recording status indicator
+                if (provider.isRecording)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green.shade200),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.mic, color: Colors.green.shade600, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Recording... Speak now (auto-stops after 30s max)',
+                          style: TextStyle(
+                            color: Colors.green.shade700,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {
-                      final txt = _ctrl.text.trim();
-                      if (txt.isNotEmpty) {
-                        provider.sendText(txt);
-                        _ctrl.clear();
-                      }
-                    },
+                // Input area
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 6,
                   ),
-                ],
-              ),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: provider.isRecording
+                              ? Colors.green.shade100
+                              : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: IconButton(
+                          icon: provider.isRecording
+                              ? Icon(
+                                  Icons.mic_off,
+                                  color: Colors.green.shade600,
+                                )
+                              : const Icon(Icons.mic, color: Colors.grey),
+                          onPressed: provider.isProcessing
+                              ? null
+                              : () async {
+                                  try {
+                                    if (!provider.isRecording) {
+                                      await provider.startRecording();
+                                    } else {
+                                      await provider
+                                          .stopRecordingAndTranscribe();
+                                    }
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Recorder error: $e'),
+                                      ),
+                                    );
+                                  }
+                                },
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _ctrl,
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (v) {
+                            provider.sendText(v);
+                            _ctrl.clear();
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Type your message here...',
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () {
+                          final txt = _ctrl.text.trim();
+                          if (txt.isNotEmpty) {
+                            provider.sendText(txt);
+                            _ctrl.clear();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],

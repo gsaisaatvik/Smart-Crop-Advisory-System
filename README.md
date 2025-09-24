@@ -10,8 +10,10 @@ An AI-powered Flutter application for crop advisory, pest detection, and farming
 - 💊 **Treatment Recommendations**: AI-generated treatment advice for detected diseases
 - 🌤️ **Weather Advisory**: Get weather-based farming recommendations
 - 💬 **Multilingual Chatbot**: Chat with AI in multiple Indian languages (English, Hindi, Tamil, Telugu, Kannada, Malayalam, Marathi, Gujarati)
-- 🎤 **Voice Input**: Record audio messages for hands-free interaction
+- 🎤 **Smart Voice Recording**: Record audio with auto-stop after 30 seconds maximum
 - 🔊 **Text-to-Speech**: Listen to AI responses in your preferred language
+- 📝 **Rich Text Formatting**: Markdown support for bold text, headings, and lists in chat
+- 🎯 **Farmer-Friendly Responses**: Concise, actionable advice (1-2 sentences, ~40 words max)
 - 📱 **Cross-Platform**: Runs on Android, iOS, and Web
 
 ## Setup Instructions
@@ -116,9 +118,42 @@ assets/
   - **Wheat**: Brown rust, Healthy, Loose Smut, Septoria, Yellow rust
 
 ### Sarvam AI Integration
-- **Chat Completions**: Multilingual conversations
-- **Speech-to-Text**: Audio transcription
-- **Text-to-Speech**: Voice responses
+- **Chat Completions**: Multilingual conversations with farmer-friendly responses
+- **Speech-to-Text**: Audio transcription with 30-second max recording
+- **Text-to-Speech**: Voice responses in user's preferred language
+- **Response Optimization**: Auto-truncation to 1-2 sentences for clarity
+
+## Recent Improvements
+
+### Enhanced User Experience
+- **🎤 Smart Voice Recording**: 
+  - Auto-stop after 30 seconds maximum
+  - Green visual indicators for recording state
+  - Manual stop control for user flexibility
+  - Clear status messages during recording
+
+- **📝 Rich Text Chat**:
+  - Markdown support for **bold text**, headings, and lists
+  - Uses `gpt_markdown` package for modern rendering
+  - Enhanced readability for agricultural advice
+
+- **🎯 Farmer-Friendly AI Responses**:
+  - Concise responses (1-2 sentences, ~40 words max)
+  - Simple language suitable for small farmers
+  - One clear actionable step per response
+  - Auto-truncation for optimal clarity
+
+### Technical Enhancements
+- **Voice Activity Detection**: Removed complex silence detection for simpler user experience
+- **Response Optimization**: Post-processing to ensure brevity and clarity
+- **Visual Improvements**: Green color scheme for recording states
+- **Error Handling**: Better error messages and recovery
+
+### User Interface
+- **Recording Status Bar**: Clear visual feedback during voice recording
+- **Green Theme**: Agricultural-friendly color scheme for recording states
+- **Markdown Rendering**: Rich text formatting in chat messages
+- **Responsive Design**: Optimized for mobile and web platforms
 
 ## Development
 
@@ -168,6 +203,7 @@ flutter build web --release
    - Grant microphone permissions
    - Check device audio settings
    - For web: Use HTTPS and modern browser
+   - Recording auto-stops after 30 seconds maximum
 
 5. **Low Prediction Accuracy**
    - Ensure images are clear and well-lit
@@ -193,12 +229,29 @@ For issues and questions:
 - Check the troubleshooting section
 - Review Flutter documentation
 
+## Dependencies
+
+### Key Packages
+- **gpt_markdown**: Modern markdown rendering for rich text chat
+- **record**: Audio recording with 30-second timer
+- **audioplayers**: Text-to-speech playback
+- **image_picker**: Camera and gallery integration
+- **provider**: State management
+- **http**: API communication
+- **sqflite**: Local database storage
+- **image**: Image processing for CNN model
+
+### AI Services
+- **Sarvam AI**: Multilingual chat, STT, and TTS
+- **Custom ResNet 50**: Local disease detection model
+
 ## Acknowledgments
 
 - **Custom ResNet 50 Model**: Trained specifically for multi-crop disease detection
 - [Sarvam AI](https://sarvam.ai/) for multilingual AI capabilities
 - [Flutter](https://flutter.dev/) for the cross-platform framework
 - [PyTorch](https://pytorch.org/) for the deep learning framework
+- [gpt_markdown](https://pub.dev/packages/gpt_markdown) for modern markdown rendering
 - Open source community for various packages
 
 ## Model Performance

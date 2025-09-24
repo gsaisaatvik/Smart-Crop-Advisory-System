@@ -1,5 +1,6 @@
 // lib/features/chat/chat_provider.dart
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -15,6 +16,12 @@ class ChatProvider extends ChangeNotifier {
   bool isRecording = false;
   bool isProcessing = false;
   String selectedLanguage = 'en-IN'; // default (BCP-47)
+
+  // Recording timer
+  Timer? _maxTimer;
+  static const Duration _maxRecordingTime = Duration(
+    seconds: 30,
+  ); // Max 30s recording
 
   ChatProvider(String apiKey) : api = SarvamApi(apiKey);
 
@@ -100,7 +107,7 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  // Start recording with record 5.x
+  // Start recording with 30s max timer
   Future<void> startRecording() async {
     if (await _recorder.hasPermission()) {
       final dir = await Directory.systemTemp.createTemp();
@@ -114,6 +121,13 @@ class ChatProvider extends ChangeNotifier {
 
       isRecording = true;
       notifyListeners();
+
+      // Start 30-second maximum timer
+      _maxTimer = Timer(_maxRecordingTime, () {
+        if (isRecording) {
+          _stopRecordingAndTranscribe();
+        }
+      });
     } else {
       throw Exception('No microphone permission');
     }
@@ -121,11 +135,22 @@ class ChatProvider extends ChangeNotifier {
 
   // Stop recording + send transcript
   Future<void> stopRecordingAndTranscribe() async {
+    await _stopRecordingAndTranscribe();
+  }
+
+  // Internal method to stop recording and transcribe
+  Future<void> _stopRecordingAndTranscribe() async {
+    if (!isRecording) return;
+
+    // Cancel timer
+    _maxTimer?.cancel();
+    _maxTimer = null;
+
     final path = await _recorder.stop();
     isRecording = false;
     notifyListeners();
 
-    if (path == null) return; // ✅ null safety
+    if (path == null) return;
 
     final file = File(path);
     isProcessing = true;
@@ -138,7 +163,18 @@ class ChatProvider extends ChangeNotifier {
         languageCode: selectedLanguage,
       );
 
-      await sendText(transcript);
+      if (transcript.trim().isNotEmpty) {
+        await sendText(transcript);
+      } else {
+        messages.insert(
+          0,
+          ChatMessage(
+            role: 'assistant',
+            text: 'No speech detected. Please try again.',
+          ),
+        );
+        notifyListeners();
+      }
     } catch (e) {
       messages.insert(0, ChatMessage(role: 'assistant', text: 'STT error: $e'));
       notifyListeners();
@@ -160,5 +196,13 @@ class ChatProvider extends ChangeNotifier {
   void clear() {
     messages.clear();
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _maxTimer?.cancel();
+    _recorder.dispose();
+    _player.dispose();
+    super.dispose();
   }
 }
