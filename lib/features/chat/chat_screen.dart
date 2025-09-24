@@ -1,6 +1,7 @@
 // lib/features/chat/chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 import 'chat_provider.dart';
 import 'chat_message.dart';
 
@@ -73,7 +74,13 @@ class _ChatScreenState extends State<ChatScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(m.text),
+                                GptMarkdown(
+                                  m.text,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 if (m.audioPath != null)
                                   Row(
                                     mainAxisSize: MainAxisSize.min,

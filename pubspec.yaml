@@ -25,6 +25,7 @@ dependencies:
   path: ^1.8.3           # path utilities
   dio: ^5.4.0            # HTTP client
   image: ^4.1.3          # image processing
+  gpt_markdown: ^1.1.4  # markdown rendering
 
 
 dev_dependencies:
