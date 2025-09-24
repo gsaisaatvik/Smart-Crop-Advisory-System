@@ -1,11 +1,11 @@
 {
-    "name": "smart_crop_advisory",
-    "short_name": "smart_crop_advisory",
+    "name": "Smart Crop Advisory",
+    "short_name": "CropAdvisory",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#4CAF50",
+    "theme_color": "#4CAF50",
+    "description": "AI-powered crop advisory app for pest detection and farming guidance.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
