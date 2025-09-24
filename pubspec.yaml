@@ -24,6 +24,7 @@ dependencies:
   sqflite: ^2.3.0        # local database
   path: ^1.8.3           # path utilities
   dio: ^5.4.0            # HTTP client
+  image: ^4.1.3          # image processing
 
 
 dev_dependencies:
@@ -34,3 +35,4 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - assets/models/
